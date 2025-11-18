@@ -14,49 +14,49 @@ provider "aws" {
 
 #vpc and subnets
 resource "aws_vpc" "vpc" {
-  cidr_block       = "10.0.0.0/16"
-  
+  cidr_block = "10.0.0.0/16"
+
   tags = {
     Name = "Adelvpc"
   }
 }
 
 resource "aws_subnet" "public_subnet1" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
-  map_public_ip_on_launch = true 
-  
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
+
   tags = {
     Name = "Adelvpc_public_subnet1"
   }
 }
 
 resource "aws_subnet" "public_subnet2" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.2.0/24"
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-1b"
-  
+
   tags = {
     Name = "Adelvpc_public_subnet2"
   }
 }
 
 resource "aws_subnet" "priv_subnet1" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.3.0/24"
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = "10.0.3.0/24"
   availability_zone = "us-east-1a"
-  
+
   tags = {
     Name = "Adelvpc_priv_subnet1"
   }
 }
 
 resource "aws_subnet" "priv_subnet2" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.4.0/24"
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = "10.0.4.0/24"
   availability_zone = "us-east-1b"
-  
+
   tags = {
     Name = "Adelvpc_priv_subnet2"
   }
@@ -64,12 +64,12 @@ resource "aws_subnet" "priv_subnet2" {
 
 #bastion host
 resource "aws_instance" "bastion" {
-  ami           = "ami-0182f373e66f89c85" 
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnet1.id
-  availability_zone = "us-east-1a"
+  ami                    = "ami-0182f373e66f89c85"
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public_subnet1.id
+  availability_zone      = "us-east-1a"
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-  
+
   tags = {
     Name = "BastionHost"
   }
@@ -78,13 +78,13 @@ resource "aws_instance" "bastion" {
 #nat gateway
 
 resource "aws_eip" "nat_eip" {
-  domain   = "vpc"
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat-gw" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_subnet2.id
-  
+
   tags = {
     Name = "gw NAT"
   }
@@ -94,7 +94,7 @@ resource "aws_nat_gateway" "nat-gw" {
 #igw 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
-  
+
   tags = {
     Name = "Adelvpc-igw"
   }
@@ -106,11 +106,11 @@ resource "aws_route_table" "publicrt" {
     gateway_id = aws_internet_gateway.igw.id
     cidr_block = "0.0.0.0/0"
   }
-  
+
   tags = {
     Name = "Adelvpc-public-rt"
   }
-  
+
 }
 resource "aws_route_table" "priv" {
   vpc_id = aws_vpc.vpc.id
@@ -126,13 +126,13 @@ resource "aws_route" "privrt" {
 resource "aws_route_table_association" "publicassc1" {
   subnet_id      = aws_subnet.public_subnet1.id
   route_table_id = aws_route_table.publicrt.id
-  
+
 }
 
 resource "aws_route_table_association" "publicassc2" {
   subnet_id      = aws_subnet.public_subnet2.id
   route_table_id = aws_route_table.publicrt.id
-  
+
 }
 
 resource "aws_route_table_association" "privassc1" {
@@ -150,7 +150,7 @@ resource "aws_lb" "alb" {
   internal           = true
   load_balancer_type = "application"
   subnets            = [aws_subnet.priv_subnet1.id, aws_subnet.priv_subnet2.id]
-  security_groups = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb_sg.id]
 }
 
 resource "aws_lb_target_group" "tggroup" {
@@ -159,10 +159,10 @@ resource "aws_lb_target_group" "tggroup" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.vpc.id
   health_check {
-    port = 80
+    port     = 80
     protocol = "HTTP"
-    path = "/"
-}
+    path     = "/"
+  }
 }
 
 resource "aws_lb_listener" "listener" {
@@ -178,30 +178,30 @@ resource "aws_lb_listener" "listener" {
 
 #Security Groups
 resource "aws_security_group" "bastion_sg" {
-  name        = "bastion_sg"
-  vpc_id      = aws_vpc.vpc.id
+  name   = "bastion_sg"
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  } 
+  }
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   tags = {
     Name = "bastion_sg"
   }
 }
 
 resource "aws_security_group" "alb_sg" {
-  name        = "alb_sg"
-  vpc_id      = aws_vpc.vpc.id
+  name   = "alb_sg"
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     from_port   = 80
@@ -216,9 +216,9 @@ resource "aws_security_group" "alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { 
-    Name = "alb_sg" 
-    }
+  tags = {
+    Name = "alb_sg"
+  }
 }
 
 resource "aws_security_group" "app_sg" {
@@ -229,7 +229,7 @@ resource "aws_security_group" "app_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]  # only ALB can reach app
+    security_groups = [aws_security_group.alb_sg.id] # only ALB can reach app
   }
 
   egress {
@@ -239,7 +239,7 @@ resource "aws_security_group" "app_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { 
+  tags = {
     Name = "app_sg"
   }
 }
@@ -249,7 +249,7 @@ resource "aws_s3_bucket" "adels3" {
   bucket = "adels3bucket2025"
 
   tags = {
-    Name        = "adel_bucket"
+    Name = "adel_bucket"
   }
 }
 
@@ -273,7 +273,7 @@ resource "aws_iam_role" "ec2_role" {
 
 #s3 access policy 
 resource "aws_iam_policy" "s3_access_policy" {
-  name        = "s3_access_policy"
+  name = "s3_access_policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -283,7 +283,7 @@ resource "aws_iam_policy" "s3_access_policy" {
           "s3:GetObject",
           "s3:PutObject"
         ]
-        Effect   = "Allow"
+        Effect = "Allow"
         Resource = [
           aws_s3_bucket.adels3.arn,
           "${aws_s3_bucket.adels3.arn}/*"
@@ -307,15 +307,15 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
 
 #auto scaling group
 resource "aws_launch_configuration" "asc" {
-  name          = "asc-launch-config"
-  image_id      = "ami-0182f373e66f89c85" 
-  instance_type = "t2.micro"
+  name                 = "asc-launch-config"
+  image_id             = "ami-0182f373e66f89c85"
+  instance_type        = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
-  security_groups = [aws_security_group.app_sg.id]
+  security_groups      = [aws_security_group.app_sg.id]
 
   lifecycle {
     create_before_destroy = true
-  }   
+  }
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
