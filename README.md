@@ -173,7 +173,7 @@ terraform-aws-scalable-webapp/
     └── diagram.png
 │── .github/workflows/
     └── workflows/
-    └── terraform.yml
+    └── main_terraform.yml
 │── .gitignore
 │── LICENSE
 │── README_MINIMAL.md
