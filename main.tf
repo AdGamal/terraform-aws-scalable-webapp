@@ -15,6 +15,7 @@ provider "aws" {
 #vpc and subnets
 resource "aws_vpc" "vpc" {
   cidr_block       = "10.0.0.0/16"
+  
   tags = {
     Name = "Adelvpc"
   }
@@ -25,6 +26,7 @@ resource "aws_subnet" "public_subnet1" {
   cidr_block = "10.0.1.0/24"
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = true 
+  
   tags = {
     Name = "Adelvpc_public_subnet1"
   }
@@ -34,6 +36,7 @@ resource "aws_subnet" "public_subnet2" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.2.0/24"
   availability_zone = "us-east-1b"
+  
   tags = {
     Name = "Adelvpc_public_subnet2"
   }
@@ -43,6 +46,7 @@ resource "aws_subnet" "priv_subnet1" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.3.0/24"
   availability_zone = "us-east-1a"
+  
   tags = {
     Name = "Adelvpc_priv_subnet1"
   }
@@ -52,6 +56,7 @@ resource "aws_subnet" "priv_subnet2" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.4.0/24"
   availability_zone = "us-east-1b"
+  
   tags = {
     Name = "Adelvpc_priv_subnet2"
   }
@@ -64,6 +69,7 @@ resource "aws_instance" "bastion" {
   subnet_id     = aws_subnet.public_subnet1.id
   availability_zone = "us-east-1a"
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+  
   tags = {
     Name = "BastionHost"
   }
@@ -78,6 +84,7 @@ resource "aws_eip" "nat_eip" {
 resource "aws_nat_gateway" "nat-gw" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_subnet2.id
+  
   tags = {
     Name = "gw NAT"
   }
@@ -87,6 +94,7 @@ resource "aws_nat_gateway" "nat-gw" {
 #igw 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
+  
   tags = {
     Name = "Adelvpc-igw"
   }
@@ -98,6 +106,7 @@ resource "aws_route_table" "publicrt" {
     gateway_id = aws_internet_gateway.igw.id
     cidr_block = "0.0.0.0/0"
   }
+  
   tags = {
     Name = "Adelvpc-public-rt"
   }
@@ -184,6 +193,7 @@ resource "aws_security_group" "bastion_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
   tags = {
     Name = "bastion_sg"
   }
@@ -229,7 +239,9 @@ resource "aws_security_group" "app_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "app_sg" }
+  tags = { 
+    Name = "app_sg"
+  }
 }
 
 #s3 bucket
@@ -280,6 +292,7 @@ resource "aws_iam_policy" "s3_access_policy" {
     ]
   })
 }
+
 #attach policy to role
 resource "aws_iam_role_policy_attachment" "attach_s3_policy" {
   role       = aws_iam_role.ec2_role.name
@@ -321,7 +334,7 @@ resource "aws_autoscaling_group" "asg" {
   launch_configuration      = aws_launch_configuration.asc.name
   vpc_zone_identifier       = [aws_subnet.priv_subnet1.id, aws_subnet.priv_subnet2.id]
   target_group_arns         = [aws_lb_target_group.tggroup.arn]
-  health_check_type         = "ALB"
+  health_check_type         = "ELB"
   health_check_grace_period = 300
 
   tag {
