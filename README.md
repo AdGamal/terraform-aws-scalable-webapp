@@ -1,7 +1,6 @@
 # 🚀 Terraform AWS Scalable Web App  
 [![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.0-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-%20Infra-orange?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-[![Checks](https://img.shields.io/github/workflow/status/AdGamal/terraform-aws-scalable-webapp/CI/main?label=CI&logo=github)](https://github.com/AdGamal/terraform-aws-scalable-webapp/actions) 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 A production-style AWS architecture deployed entirely with **one Terraform file**.  
