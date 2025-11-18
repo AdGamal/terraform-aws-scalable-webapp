@@ -26,4 +26,4 @@ terraform destroy
 
 
 ## Diagram
-![Architecture](./diagram/diagram.png)
+![Architecture](.diagrams/diagram.png)
