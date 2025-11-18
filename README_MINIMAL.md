@@ -14,17 +14,16 @@ A clean, single-file Terraform setup that deploys:
 Perfect as a reference architecture for junior → mid DevOps interviews.
 
 ## Deploy
+```
 terraform init
-
 terraform plan
-
 terraform apply
-
+```
 
 ## Destroy
-
-
+```
 terraform destroy
+```
 
 
 ## Diagram
