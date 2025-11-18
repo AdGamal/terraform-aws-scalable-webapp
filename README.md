@@ -1,9 +1,8 @@
 # 🚀 Terraform AWS Scalable Web App  
-[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.0-623CE4?logo=terraform&logoColor=white)]()  
-[![AWS](https://img.shields.io/badge/AWS-Cloud-orange?logo=amazonaws&logoColor=white)]()  
-![Security](https://img.shields.io/badge/Security-Best%20Practices-green)  
-![ASG](https://img.shields.io/badge/AutoScaling-Enabled-blue)  
-![Cost](https://img.shields.io/badge/NAT-1%20Gateway%20%28Cost%20Efficient%29-yellow)
+[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.0-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![AWS](https://img.shields.io/badge/AWS-%20Infra-orange?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
+[![Checks](https://img.shields.io/github/workflow/status/<YOUR_GITHUB_USERNAME>/terraform-aws-ha-web/CI/main?label=CI&logo=github)](https://github.com/<YOUR_GITHUB_USERNAME>/terraform-aws-ha-web/actions) 
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 A production-style AWS architecture deployed entirely with **one Terraform file**.  
 Private subnets, internal ALB, Auto Scaling, NAT, IAM, and a bastion host — all stitched together in clean Terraform code.
