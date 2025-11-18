@@ -28,5 +28,4 @@ terraform destroy
 
 
 ## Diagram
-![Architecture](./terraform-aws-scalable-webapp/diagrams
-/diagram.png)
+![Architecture](diagrams/diagram.png)
