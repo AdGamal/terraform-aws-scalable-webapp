@@ -137,7 +137,8 @@ Destroy Infrastructure
 terraform destroy
 ```
 
-📌 Usage Examples
+## 📌 Usage Examples
+
 1 — SSH into Bastion
 ``` 
 ssh -i my-key.pem ec2-user@$(terraform output -raw bastion_public_ip)
@@ -153,16 +154,19 @@ ssh ec2-user@<private-ip>
 curl http://$(terraform output -raw alb_dns_name)
  ```
 
-🔐 Security Model
+## 🔐 Security Model
 
-Component	Allowed Traffic
-Bastion SG	SSH from your IP
-ALB SG	HTTP from VPC only
-App SG	HTTP only from ALB SG
-Private EC2	No public IP, outbound via NAT
-NAT	Outbound internet for updates
 
-📁 Project Structure
+| Component       | Allowed Traffic                                     |
+| --------------- | --------------------------------------------------- |
+| **Bastion SG**  | SSH **only from your IP**                           |
+| **ALB SG**      | HTTP **only from inside the VPC**                   |
+| **App SG**      | HTTP **only from ALB SG**                           |
+| **Private EC2** | No public IP — outbound **only via NAT**            |
+| **NAT Gateway** | Outbound internet for updates, S3, package installs |
+
+
+## 📁 Project Structure
 ```
 terraform-aws-scalable-webapp/
 └── diagram/
@@ -177,23 +181,37 @@ terraform-aws-scalable-webapp/
 │── main.tf
 ```
 
-🧠 What You Learn
+## 🧠 What You Learn  
+• VPC subnet isolation  
+• Internal ALB flow  
+• NAT outbound behavior  
+• IAM roles vs access keys  
+• ASG + ALB integration  
+• Terraform end-to-end wiring
 
--VPC design & subnet isolation
--Internal ALB architecture
--How NAT enables private-instance outbound
--Why IAM roles replace access keys
--How Auto Scaling integrates with ALB
--How Terraform links networking + compute + IAM
 
-🏁 Next Enhancements
+## 🏁 Next Enhancements
 
--Add HTTPS (ACM)
--Add RDS (private DB layer)
--Add AWS WAF
--Add CI/CD pipeline
--Add CloudWatch alarms
+Upgrades that can turn this into a full production-grade setup:
 
-📜 License
+🔐 Add HTTPS (ACM certificate + ALB HTTPS listener)
+
+🗄️ Add RDS in private subnets for app data
+
+🛡️ Add AWS WAF to protect your ALB
+
+🚀 Add CI/CD pipeline (GitHub Actions → Terraform Cloud or OIDC)
+
+📊 Add CloudWatch alarms & dashboards
+
+📦 Enable ALB + S3 access logging
+
+🔧 Switch SSH → SSM Session Manager
+
+🛟 Enable AWS Backup snapshots
+
+
+
+## 📜 License
 
 MIT License — free to use, fork, improve.
