@@ -15,7 +15,9 @@ Perfect as a reference architecture for junior → mid DevOps interviews.
 
 ## Deploy
 terraform init
+
 terraform plan
+
 terraform apply
 
 
@@ -26,4 +28,5 @@ terraform destroy
 
 
 ## Diagram
-![Architecture](.diagrams/diagram.png)
+![Architecture](terraform-aws-scalable-webapp/diagrams
+/diagram.png)
