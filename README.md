@@ -89,7 +89,7 @@ Private subnets, internal ALB, Auto Scaling, NAT, IAM, and a bastion host — al
 ---
 
 ## 📈 Terraform Graph (Conceptual)
-
+```
 VPC
 ├── Subnets
 │ ├── Public A (Bastion)
@@ -111,7 +111,7 @@ VPC
 ├── IAM Role + Instance Profile
 └── Auto Scaling Group
 └── Launch Configuration
-
+```
 
 ---
 
@@ -139,15 +139,22 @@ terraform destroy
 
 📌 Usage Examples
 1 — SSH into Bastion
-``` ssh -i my-key.pem ec2-user@$(terraform output -raw bastion_public_ip) ```
+``` 
+ssh -i my-key.pem ec2-user@$(terraform output -raw bastion_public_ip)
+ ```
 
 2 — SSH into Private EC2
-``` ssh ec2-user@<private-ip> ```
+``` 
+ssh ec2-user@<private-ip>
+```
 
 3 — Test Web App
-``` curl http://$(terraform output -raw alb_dns_name) ```
+```
+curl http://$(terraform output -raw alb_dns_name)
+ ```
 
 🔐 Security Model
+
 Component	Allowed Traffic
 Bastion SG	SSH from your IP
 ALB SG	HTTP from VPC only
@@ -156,12 +163,19 @@ Private EC2	No public IP, outbound via NAT
 NAT	Outbound internet for updates
 
 📁 Project Structure
+```
 terraform-aws-scalable-webapp/
-│── main.tf
-│── README.md
 └── diagram/
     └── diagram.png
-
+│── .github/workflows/
+    └── workflows/
+    └── terraform.yml
+│── .gitignore
+│── LICENSE
+│── README_MINIMAL.md
+│── README.md
+│── main.tf
+```
 
 🧠 What You Learn
 
